@@ -1,0 +1,325 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+
+<head>
+  <title>Calculadora - Ajuste de Curvas | RK4</title>
+  <!-- Required meta tags -->
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no" />
+
+  <!-- Bootstrap CSS v5.2.1 -->
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet"
+    integrity="sha384-T3c6CoIi6uLrA9TneNEoa7RxnatzjcDSCmG1MXxSR1GAsXEV/Dwwykc2MPK8M2HN" crossorigin="anonymous" />
+</head>
+
+<body>
+  <header>
+    <nav class="navbar navbar-expand-sm navbar-light bg-light">
+      <div class="container">
+        <a class="navbar-brand" href="#">Calculadora Online</a>
+        <button class="navbar-toggler d-lg-none" type="button" data-bs-toggle="collapse"
+          data-bs-target="#collapsibleNavId" aria-controls="collapsibleNavId" aria-expanded="false"
+          aria-label="Toggle navigation">
+          <span class="navbar-toggler-icon"></span>
+        </button>
+        <div class="collapse navbar-collapse" id="collapsibleNavId">
+          <ul class="navbar-nav me-auto mt-2 mt-lg-0">
+            <li class="nav-item">
+              <a class="nav-link active" href="#" aria-current="page" id="ajuste_curvas">Ajuste de
+                curvas</a>
+            </li>
+            <li class="nav-item">
+              <a class="nav-link" href="#" id="rk4">RK-4</a>
+            </li>
+          </ul>
+        </div>
+      </div>
+    </nav>
+  </header>
+  <main>
+    <div class="container">
+      <div class="row">
+        <div class="col-md-12">
+          <h1 class="text-center">Calculadora Online</h1>
+        </div>
+      </div>
+      <div> <!-- Ajuste de curvas -->
+        <div class="row">
+          <h2>Ajuste de curvas</h2>
+        </div>
+        <div class="row my-3">
+          <h4>Insira os dados do problema</h4>
+          <div class="col-sm-12 col-md-6">
+            <label for="n_pontos">Número de Pontos(n)</label>
+            <input class="form-control" type="number" id="n_pontos" name="n_pontos" min="2" value="3" />
+          </div>
+          <div class="col-sm-12 col-md-6">
+            <label for="grau">Grau do polinômio</label>
+            <input class="form-control" type="number" id="grau" name="grau" min="1" value="2" />
+          </div>
+        </div>
+        <div class="row d-none">
+          <p><strong>Erro total:</strong><span id="erro-total"></span></p>
+          <p><strong>Coeficiente de Determinação:</strong><span id="determinacao"></span></p>
+        </div>
+        <hr>
+        <div class="my-3">
+          <h4>Insira os pontos</h4>
+          <!-- Matrix p1 p2 p3 ... -->
+          <!-- Tabela editável -->
+          <table class="table table-bordered table-hover" id="tabela">
+            <thead>
+              <tr>
+                <th scope="col">#</th>
+                <th scope="col">Ponto: 1</th>
+                <th scope="col">Ponto: 2</th>
+                <th scope="col">Ponto: 3</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <th scope="row">X</th>
+                <td><input type="number" class="form-control" id="x1" name="x1" /></td>
+                <td><input type="number" class="form-control" id="x2" name="x2" /></td>
+                <td><input type="number" class="form-control" id="x3" name="x3" /></td>
+              </tr>
+              <tr>
+                <th scope="row">Y</th>
+                <td><input type="number" class="form-control" id="y1" name="y1" /></td>
+                <td><input type="number" class="form-control" id="y2" name="y2" /></td>
+                <td><input type="number" class="form-control" id="y3" name="y3" /></td>
+              </tr>
+            </tbody>
+          </table>
+          <button class="btn btn-success" id="calcular">Calcular</button>
+        </div>
+        <hr>
+        <div class="my-3">
+          <h4>Matriz de Somatório de X</h4>
+          <table class="table table-bordered table-hover" id="somatorio-x">
+            <thead>
+              <tr>
+                <th scope="col">#</th>
+                <th scope="col">X</th>
+                <th scope="col">X²</th>
+                <th scope="col">X³</th>
+                <th scope="col">X⁴</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <th scope="row">Σ</th>
+                <td><input type="number" class="form-control" id="sum-x" name="sum-x" readonly /></td>
+                <td><input type="number" class="form-control" id="sum-x2" name="sum-x2" readonly /></td>
+                <td><input type="number" class="form-control" id="sum-x3" name="sum-x3" readonly /></td>
+                <td><input type="number" class="form-control" id="sum-x4" name="sum-x4" readonly /></td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+        <hr>
+        <div class="my-3">
+          <h4>Matriz de Somatório de Y</h4>
+          <table class="table table-bordered table-hover" id="somatorio-y">
+            <thead>
+              <tr>
+                <th scope="col">#</th>
+                <th scope="col">Y</th>
+                <th scope="col">YX</th>
+                <th scope="col">YX²</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <th scope="row">Σ</th>
+                <td><input type="number" class="form-control" id="sum-y" name="sum-y" readonly /></td>
+                <td><input type="number" class="form-control" id="sum-yx" name="sum-yx" readonly /></td>
+                <td><input type="number" class="form-control" id="sum-yx2" name="sum-yx2" readonly /></td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+      <hr>
+      <div class="my-3">
+        <h4>Matriz de Termos de b</h4>
+        <table class="table table-bordered table-hover" id="somatorio-b">
+          <thead>
+            <tr>
+              <th scope="col">#</th>
+              <th scope="col">b0</th>
+              <th scope="col">b1</th>
+              <th scope="col">b2</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <th scope="row">Termo</th>
+              <td><input type="number" class="form-control" id="sum-b0" name="sum-b0" readonly /></td>
+              <td><input type="number" class="form-control" id="sum-b1" name="sum-b1" readonly /></td>
+              <td><input type="number" class="form-control" id="sum-b2" name="sum-b2" readonly /></td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+
+
+  </main>
+  <footer>
+    <!-- place footer here -->
+  </footer>
+  <!-- Bootstrap JavaScript Libraries -->
+  <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.11.8/dist/umd/popper.min.js"
+    integrity="sha384-I7E8VVD/ismYTF4hNIPjVp/Zjvgyol6VFvRkX/vR+Vc4jQkC+hVqc2pM8ODewa9r"
+    crossorigin="anonymous"></script>
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.min.js"
+    integrity="sha384-BBtl+eGJRgqQAUMxJ7pMwbEyER4l1g+O15P+16Ep7Q9Q+zqX6gSbd85u4mG4QzX+"
+    crossorigin="anonymous"></script>
+
+  <script>
+    //Alterando tabelas ao mudar o número de pontos
+    document.getElementById('n_pontos').addEventListener('change', function () {
+      let n_pontos = parseInt(this.value);
+      let tabela = document.getElementById('tabela');
+
+      //Modificando a tabela #tabela
+      changeTable('tabela', ['x', 'y'], ['X', 'Y'], n_pontos);
+    });
+
+    document.getElementById('grau').addEventListener('change', function () {
+      //Modificando a tabela #somatorio-x (depende do grau)
+      let grau = parseInt(document.getElementById('grau').value);
+      let n_pontos = parseInt(document.getElementById('n_pontos').value);
+      var columns_names = [];
+      for (let i = 1; i <= n_pontos; i++) {
+        columns_names.push(`x${i}`);
+      }
+      changeTable('somatorio-x', columns_names, ['Σ'], grau + 1);
+
+      //Modificando a tabela #somatorio-y (depende do grau)
+      changeTable('somatorio-y', columns_names, ['Σ'], grau + 1);
+
+      //Modificando a tabela #somatorio-b (depende do grau)
+      changeTable('somatorio-b', ['b0', 'b1', 'b2'], ['b'], grau + 1);
+    });
+
+    function changeTable(id, columns_names, row_names, n_pontos) {
+      let tabela = document.getElementById(id);
+      let tbody = tabela.getElementsByTagName('tbody')[0];
+      let thead = tabela.getElementsByTagName('thead')[0];
+      let tr = document.createElement('tr');
+      let th = document.createElement('th');
+      let td = document.createElement('td');
+
+      //Limpando a tabela
+      tbody.innerHTML = '';
+      thead.innerHTML = '';
+
+      //Adicionando o cabeçalho de acordo com o vetor columns_names
+      tr = document.createElement('tr');
+      th = document.createElement('th');
+      th.setAttribute('scope', 'col');
+      th.innerHTML = '#';
+      tr.appendChild(th);
+
+      for (let i = 1; i <= n_pontos; i++) {
+        th = document.createElement('th');
+        th.setAttribute('scope', 'col');
+        th.innerHTML = `${row_names[0]}${i-1}`;
+        tr.appendChild(th);
+      }
+      thead.appendChild(tr);
+
+      //Adicionando os pontos
+      for (let i = 0; i < row_names.length; i++) {
+        tr = document.createElement('tr');
+        th = document.createElement('th');
+        th.setAttribute('scope', 'row');
+        th.innerHTML = row_names[i];
+        tr.appendChild(th);
+        for (let j = 1; j <= n_pontos; j++) {
+          td = document.createElement('td');
+          td.innerHTML = `<input type="number" class="form-control" id="${columns_names[j - 1] + i}" name="${columns_names[j - 1] + i}" />`;
+          tr.appendChild(td);
+        }
+        tbody.appendChild(tr);
+      }
+    }
+    
+    //Calculando os somatórios
+    function calcularSomatorio(id, columns_names, row_names) {
+      let tabela = document.getElementById(id);
+      let tbody = tabela.getElementsByTagName('tbody')[0];
+      let tr = tbody.getElementsByTagName('tr');
+      let sum = [];
+      for (let i = 0; i < row_names.length; i++) {
+        sum.push(0);
+      }
+      for (let i = 0; i < tr.length; i++) {
+        let td = tr[i].getElementsByTagName('td');
+        for (let j = 1; j < td.length; j++) {
+          sum[i] += parseFloat(td[j].getElementsByTagName('input')[0].value);
+        }
+        tr[i].getElementsByTagName('input')[0].value = sum[i];
+      }
+      return sum;
+    }
+
+    document.getElementById('calcular').addEventListener('click', function () {
+      //Calculando os somatórios
+      let sum_x = calcularSomatorio('somatorio-x', ['x'], ['Σ']);
+      let sum_y = calcularSomatorio('somatorio-y', ['y'], ['Σ']);
+
+      //Calculando os somatórios de x², x³, x⁴, yx, yx²
+      let tabela_x = document.getElementById('somatorio-x');
+      let tbody_x = tabela_x.getElementsByTagName('tbody')[0];
+      let tr_x = tbody_x.getElementsByTagName('tr');
+      let sum_x2 = 0;
+      let sum_x3 = 0;
+      let sum_x4 = 0;
+      let sum_yx = 0;
+      let sum_yx2 = 0;
+      for (let i = 1; i < tr_x.length; i++) {
+        let td = tr_x[i].getElementsByTagName('td');
+        sum_x2 += Math.pow(parseFloat(td[1].getElementsByTagName('input')[0].value), 2);
+        sum_x3 += Math.pow(parseFloat(td[1].getElementsByTagName('input')[0].value), 3);
+        sum_x4 += Math.pow(parseFloat(td[1].getElementsByTagName('input')[0].value), 4);
+        sum_yx += parseFloat(td[1].getElementsByTagName('input')[0].value) * parseFloat(td[2].getElementsByTagName('input')[0].value);
+        sum_yx2 += parseFloat(td[1].getElementsByTagName('input')[0].value) * parseFloat(td[3].getElementsByTagName('input')[0].value);
+      }
+      document.getElementById('sum-x2').value = sum_x2;
+      document.getElementById('sum-x3').value = sum_x3;
+      document.getElementById('sum-x4').value = sum_x4;
+      document.getElementById('sum-yx').value = sum_yx;
+      document.getElementById('sum-yx2').value = sum_yx2;
+
+      //Calculando os coeficientes b0, b1, b2
+      let n_pontos = parseInt(document.getElementById('n_pontos').value);
+      let grau = parseInt(document.getElementById('grau').value);
+      let b0 = (sum_y[0] * sum_x2 - sum_x[0] * sum_yx) / (n_pontos * sum_x2 - Math.pow(sum_x[0], 2));
+      let b1 = (n_pontos * sum_yx - sum_x[0] * sum_y[0]) / (n_pontos * sum_x2 - Math.pow(sum_x[0], 2));
+      let b2 = (sum_y[0] - b0 * n_pontos - b1 * sum_x[0]) / n_pontos;
+      document.getElementById('sum-b0').value = b0;
+
+      document.getElementById('sum-b1').value = b1;
+      document.getElementById('sum-b2').value = b2;
+
+      //Calculando o erro total
+      let erro_total = 0;
+
+      for (let i = 1; i <= n_pontos; i++) {
+        let x = parseFloat(document.getElementById(`x${i}`).value);
+        let y = parseFloat(document.getElementById(`y${i}`).value);
+        let y_calc = b0 + b1 * x + b2 * Math.pow(x, 2);
+        erro_total += Math.pow(y - y_calc, 2);
+      }
+      document.getElementById('erro-total').innerHTML = erro_total;
+      let y_medio = sum_y[0] / n_pontos;
+      let determinacao = 1 - erro_total / sum_y[0];
+      document.getElementById('determinacao').innerHTML = determinacao;
+    });
+  </script>
+</body>
+
+</html>
