@@ -60,7 +60,6 @@
         </div>
         <div class="row d-none" id="show_results">
           <p><strong>Erro total:</strong><span id="erro-total"></span></p>
-          <p><strong>Coeficiente de Determinação:</strong><span id="determinacao"></span></p>
         </div>
         <hr>
         <div class="my-3">
@@ -318,7 +317,8 @@
 
       //Montando sistema de equação para calcular termos b
       let matriz_b = []
-      let n_linhas = inputs_y.length;
+      let n_linhas = tabela_somatorio_y.getElementsByTagName('input').length;
+
       let inputs_b = document.getElementById('termos-b').getElementsByTagName('input');
       let initial_term = n;
       let all_coefs = [n];
@@ -365,16 +365,8 @@
         erro_total += Math.pow(y - y_calc, 2);
       }
 
-      //
       document.getElementById('erro-total').innerText = erro_total;
-      document.getElementById('determinacao').innerText = 1 - (erro_total / determinacao);
-
       document.getElementById('show_results').classList.remove('d-none');
-
-
-
-
-
     });
   </script>
 </body>
