@@ -8,9 +8,9 @@ O ajuste de curvas é uma técnica utilizada para encontrar uma função matemá
 
 O método de mínimos quadrados é utilizado para encontrar os valores de m e b que minimizam a soma dos quadrados das diferenças entre os valores observados e os valores previstos pela função ajustada.
 
-## Como usar a calculadora de ajuste linear de curvas
+## Como usar a calculadora de ajuste de curvas
 
-1. Basta acessar o link da aplicação: [Calculadora de Ajuste Linear de Curvas](https://hugobsan.me/Calculadora_AjusteLinear_RK4/)
+1. Basta acessar o link da aplicação: [Calculadora de Ajuste de Curvas](https://hugobsan.me/Calculadora_AjusteLinear_RK4/)
 
 ## Contribuição
 
