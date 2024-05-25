@@ -162,8 +162,6 @@
         </table>
       </div>
     </div>
-
-
   </main>
   <footer>
     <!-- place footer here -->
@@ -228,7 +226,7 @@
       }
     }
 
-    // Ao alterar o número de pontos
+    // Modificando tabelas ao alterar o número de pontos
     document.getElementById('n_pontos').addEventListener('change', function () {
       let n = parseInt(this.value);
 
@@ -245,7 +243,7 @@
       changeTable('tabela', cols, rows);
     });
 
-    // Ao alterar o grau do polinômio
+    // Modificando tabelas ao alterar o grau do polinômio
     document.getElementById('grau').addEventListener('change', function () {
       let n = parseInt(this.value);
 
@@ -344,6 +342,7 @@
 
       console.log("Matriz Coeficiente e Matriz Resultados: ",coef_matrix, results_matrix);
 
+      // Resolvendo o sistema de equações
       let solutions = math.lusolve(coef_matrix, results_matrix);
 
       console.log(solutions);
