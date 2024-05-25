@@ -178,146 +178,169 @@
     crossorigin="anonymous"></script>
 
   <script>
-    //Alterando tabelas ao mudar o número de pontos
-    document.getElementById('n_pontos').addEventListener('change', function () {
-      let n_pontos = parseInt(this.value);
-      let tabela = document.getElementById('tabela');
+    /** Função que altera as linhas e colunas de uma tabela
+     * @param id {string} - id do elemento da tabela
+     * @param cols {array} - array com as labels das colunas 
+     * @param rows {array} - array com as labels das linhas
+     * */
+    function changeTable(id, cols, rows) {
+      let table = document.getElementById(id);
+      let tbody = table.getElementsByTagName('tbody')[0];
+      let thead = table.getElementsByTagName('thead')[0];
 
-      //Modificando a tabela #tabela
-      changeTable('tabela', ['x', 'y'], ['X', 'Y'], n_pontos);
-    });
-
-    document.getElementById('grau').addEventListener('change', function () {
-      //Modificando a tabela #somatorio-x (depende do grau)
-      let grau = parseInt(document.getElementById('grau').value);
-      let n_pontos = parseInt(document.getElementById('n_pontos').value);
-      var columns_names = [];
-      for (let i = 1; i <= n_pontos; i++) {
-        columns_names.push(`x${i}`);
-      }
-      changeTable('somatorio-x', columns_names, ['Σ'], grau + 1);
-
-      //Modificando a tabela #somatorio-y (depende do grau)
-      changeTable('somatorio-y', columns_names, ['Σ'], grau + 1);
-
-      //Modificando a tabela #somatorio-b (depende do grau)
-      changeTable('somatorio-b', ['b0', 'b1', 'b2'], ['b'], grau + 1);
-    });
-
-    function changeTable(id, columns_names, row_names, n_pontos) {
-      let tabela = document.getElementById(id);
-      let tbody = tabela.getElementsByTagName('tbody')[0];
-      let thead = tabela.getElementsByTagName('thead')[0];
-      let tr = document.createElement('tr');
-      let th = document.createElement('th');
-      let td = document.createElement('td');
-
-      //Limpando a tabela
+      // Limpa a tabela
       tbody.innerHTML = '';
       thead.innerHTML = '';
 
-      //Adicionando o cabeçalho de acordo com o vetor columns_names
-      tr = document.createElement('tr');
-      th = document.createElement('th');
+      // Cria as colunas
+      let tr = document.createElement('tr');
+      let th = document.createElement('th');
       th.setAttribute('scope', 'col');
-      th.innerHTML = '#';
+      th.innerText = '#';
       tr.appendChild(th);
-
-      for (let i = 1; i <= n_pontos; i++) {
-        th = document.createElement('th');
+      for (let i = 0; i < cols.length; i++) {
+        let th = document.createElement('th');
         th.setAttribute('scope', 'col');
-        th.innerHTML = `${row_names[0]}${i-1}`;
+        th.innerText = cols[i];
         tr.appendChild(th);
       }
       thead.appendChild(tr);
 
-      //Adicionando os pontos
-      for (let i = 0; i < row_names.length; i++) {
-        tr = document.createElement('tr');
-        th = document.createElement('th');
+      // Cria as linhas
+      for (let i = 0; i < rows.length; i++) {
+        let tr = document.createElement('tr');
+        let th = document.createElement('th');
         th.setAttribute('scope', 'row');
-        th.innerHTML = row_names[i];
+        th.innerText = rows[i];
         tr.appendChild(th);
-        for (let j = 1; j <= n_pontos; j++) {
-          td = document.createElement('td');
-          td.innerHTML = `<input type="number" class="form-control" id="${columns_names[j - 1] + i}" name="${columns_names[j - 1] + i}" />`;
+        for (let j = 0; j < cols.length; j++) {
+          let td = document.createElement('td');
+          let input = document.createElement('input');
+          input.setAttribute('type', 'number');
+          input.setAttribute('class', 'form-control');
+          input.setAttribute('id', `${rows[i].toLowerCase()}${j + 1}`);
+          input.setAttribute('name', `${rows[i].toLowerCase()}${j + 1}`);
+          td.appendChild(input);
           tr.appendChild(td);
         }
         tbody.appendChild(tr);
       }
     }
+
+    // Ao alterar o número de pontos
+    document.getElementById('n_pontos').addEventListener('change', function () {
+      let n = parseInt(this.value);
+
+      //Define o label das colunas
+      let cols = [];
+      for (let i = 1; i <= n; i++) {
+        cols.push(`Ponto: ${i}`);
+      }
+
+      //Define o label das linhas
+      let rows = ['X', 'Y'];
+
+      //Cria as linhas e colunas da tabela
+      changeTable('tabela', cols, rows);
+    });
+
+    // Ao alterar o grau do polinômio
+    document.getElementById('grau').addEventListener('change', function () {
+      let n = parseInt(this.value);
+
+      //Tabela de somatório de X
+      let cols = [];
+      for (let i = 1; i <= n + 1; i++) {
+        cols.push(`X${i}`);
+      }
+
+      let rows = ['Σ'];
+
+      changeTable('somatorio-x', cols, rows);
+
+      //Tabela de somatório de Y
+      cols = ['Y', 'YX'];
+      for (let i = 1; i <= n; i++) {
+        cols.push(`YX${i}`);
+      }
+
+      changeTable('somatorio-y', cols, rows);
+
+      //Tabela de somatório de b
+      cols = ['b0'];
+      for (let i = 1; i <= n; i++) {
+        cols.push(`b${i}`);
+      }
+
+      changeTable('somatorio-b', cols, rows);
+    });
     
-    //Calculando os somatórios
-    function calcularSomatorio(id, columns_names, row_names) {
-      let tabela = document.getElementById(id);
-      let tbody = tabela.getElementsByTagName('tbody')[0];
-      let tr = tbody.getElementsByTagName('tr');
-      let sum = [];
-      for (let i = 0; i < row_names.length; i++) {
-        sum.push(0);
-      }
-      for (let i = 0; i < tr.length; i++) {
-        let td = tr[i].getElementsByTagName('td');
-        for (let j = 1; j < td.length; j++) {
-          sum[i] += parseFloat(td[j].getElementsByTagName('input')[0].value);
-        }
-        tr[i].getElementsByTagName('input')[0].value = sum[i];
-      }
-      return sum;
-    }
-
+    //Ao clicar no botão calcular
     document.getElementById('calcular').addEventListener('click', function () {
-      //Calculando os somatórios
-      let sum_x = calcularSomatorio('somatorio-x', ['x'], ['Σ']);
-      let sum_y = calcularSomatorio('somatorio-y', ['y'], ['Σ']);
-
-      //Calculando os somatórios de x², x³, x⁴, yx, yx²
-      let tabela_x = document.getElementById('somatorio-x');
-      let tbody_x = tabela_x.getElementsByTagName('tbody')[0];
-      let tr_x = tbody_x.getElementsByTagName('tr');
-      let sum_x2 = 0;
-      let sum_x3 = 0;
-      let sum_x4 = 0;
-      let sum_yx = 0;
-      let sum_yx2 = 0;
-      for (let i = 1; i < tr_x.length; i++) {
-        let td = tr_x[i].getElementsByTagName('td');
-        sum_x2 += Math.pow(parseFloat(td[1].getElementsByTagName('input')[0].value), 2);
-        sum_x3 += Math.pow(parseFloat(td[1].getElementsByTagName('input')[0].value), 3);
-        sum_x4 += Math.pow(parseFloat(td[1].getElementsByTagName('input')[0].value), 4);
-        sum_yx += parseFloat(td[1].getElementsByTagName('input')[0].value) * parseFloat(td[2].getElementsByTagName('input')[0].value);
-        sum_yx2 += parseFloat(td[1].getElementsByTagName('input')[0].value) * parseFloat(td[3].getElementsByTagName('input')[0].value);
-      }
-      document.getElementById('sum-x2').value = sum_x2;
-      document.getElementById('sum-x3').value = sum_x3;
-      document.getElementById('sum-x4').value = sum_x4;
-      document.getElementById('sum-yx').value = sum_yx;
-      document.getElementById('sum-yx2').value = sum_yx2;
-
-      //Calculando os coeficientes b0, b1, b2
-      let n_pontos = parseInt(document.getElementById('n_pontos').value);
+      let n = parseInt(document.getElementById('n_pontos').value);
       let grau = parseInt(document.getElementById('grau').value);
-      let b0 = (sum_y[0] * sum_x2 - sum_x[0] * sum_yx) / (n_pontos * sum_x2 - Math.pow(sum_x[0], 2));
-      let b1 = (n_pontos * sum_yx - sum_x[0] * sum_y[0]) / (n_pontos * sum_x2 - Math.pow(sum_x[0], 2));
-      let b2 = (sum_y[0] - b0 * n_pontos - b1 * sum_x[0]) / n_pontos;
-      document.getElementById('sum-b0').value = b0;
 
-      document.getElementById('sum-b1').value = b1;
-      document.getElementById('sum-b2').value = b2;
+      let tabela_valores = document.getElementById('tabela');
 
-      //Calculando o erro total
-      let erro_total = 0;
+      //Calcula os somatórios X
+      let tabela_somatorio_x = document.getElementById('somatorio-x');
 
-      for (let i = 1; i <= n_pontos; i++) {
-        let x = parseFloat(document.getElementById(`x${i}`).value);
-        let y = parseFloat(document.getElementById(`y${i}`).value);
-        let y_calc = b0 + b1 * x + b2 * Math.pow(x, 2);
-        erro_total += Math.pow(y - y_calc, 2);
+      let inputs_x = tabela_valores.getElementsByTagName('tr')[1].getElementsByTagName('input')
+
+      let quant_iter_x = tabela_somatorio_x.getElementsByTagName('input').length
+
+      for (let i = 1; i <= quant_iter_x; i++) {
+        let sum = 0;
+        for (let j = 0; j < inputs_x.length; j++) {
+          sum += Math.pow(parseFloat(inputs_x[j].value), i);
+        }
+        tabela_somatorio_x.getElementsByTagName('input')[i-1].value = sum;
       }
-      document.getElementById('erro-total').innerHTML = erro_total;
-      let y_medio = sum_y[0] / n_pontos;
-      let determinacao = 1 - erro_total / sum_y[0];
-      document.getElementById('determinacao').innerHTML = determinacao;
+
+      //Calculando o somatório Y
+      let tabela_somatorio_y = document.getElementById('somatorio-y');
+
+      let inputs_y = tabela_valores.getElementsByTagName('tr')[2].getElementsByTagName('input')
+
+      let quant_iter_y = tabela_somatorio_y.getElementsByTagName('input').length
+
+      for (let i = 0; i < quant_iter_y; i++) {
+        let sum = 0;
+        for (let j = 0; j < inputs_y.length; j++) {
+          sum += parseFloat(inputs_y[j].value) * Math.pow(parseFloat(inputs_x[j].value), i);
+        }
+        tabela_somatorio_y.getElementsByTagName('input')[i].value = sum;
+      }
+
+      //Calculando os termos B
+
+      //Montando sistema de equação para calcular termos b
+      let matriz_b = []
+      let n_linhas = inputs_y.length;
+      let inputs_b = tabela_somatorio_y.getElementsByTagName('input');
+      let initial_term = n;
+      let all_coefs = [n];
+
+      for(i = 0; i< tabela_somatorio_x.getElementsByTagName('input').length; i++){
+        all_coefs.push(parseFloat(tabela_somatorio_x.getElementsByTagName('input')[i].value));
+      }
+
+      let results_matrix = []
+      for(i = 0; i< tabela_somatorio_y.getElementsByTagName('input').length; i++){
+        results_matrix.push(parseFloat(tabela_somatorio_y.getElementsByTagName('input')[i].value));
+      }
+
+      let coef_matrix = [];
+
+      for (let i = 0; i < n_linhas; i++) {
+        let line_matrix = [];
+        for (let j = 0; j < n_linhas; j++) {
+          line_matrix.push(all_coefs[j+i]);
+        }
+        coef_matrix.push(line_matrix);
+      }
+
+      console.log(coef_matrix, results_matrix);
     });
   </script>
 </body>
