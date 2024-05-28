@@ -162,8 +162,14 @@
         </table>
       </div>
     </div>
-
-
+    <div style="position: fixed; top:50px; right: 20px;">
+      <button class="btn btn-primary" data-bs-toggle="collapse" href="#collapseCalculadora" role="button"
+        aria-expanded="false" aria-controls="collapseCalculadora"
+        style="position: fixed; top:50px; right: 20px;">Calculadora Científica</button>
+      <div class="collapse col-6" id="collapseCalculadora">
+        <iframe width="600" height="500" src="https://web2.0calc.com/widgets/horizontal/"></iframe>
+      </div>
+    </div>
   </main>
   <footer>
     <!-- place footer here -->
@@ -199,6 +205,7 @@
       th.setAttribute('scope', 'col');
       th.innerText = '#';
       tr.appendChild(th);
+
       for (let i = 0; i < cols.length; i++) {
         let th = document.createElement('th');
         th.setAttribute('scope', 'col');
@@ -275,7 +282,7 @@
 
       changeTable('termos-b', cols, rows);
     });
-    
+
     //Ao clicar no botão calcular
     document.getElementById('calcular').addEventListener('click', function () {
       let n = parseInt(document.getElementById('n_pontos').value);
@@ -295,7 +302,7 @@
         for (let j = 0; j < inputs_x.length; j++) {
           sum += Math.pow(parseFloat(inputs_x[j].value), i);
         }
-        tabela_somatorio_x.getElementsByTagName('input')[i-1].value = sum;
+        tabela_somatorio_x.getElementsByTagName('input')[i - 1].value = sum;
       }
 
       //Calculando o somatório Y
@@ -323,12 +330,12 @@
       let initial_term = n;
       let all_coefs = [n];
 
-      for(i = 0; i< tabela_somatorio_x.getElementsByTagName('input').length; i++){
+      for (i = 0; i < tabela_somatorio_x.getElementsByTagName('input').length; i++) {
         all_coefs.push(parseFloat(tabela_somatorio_x.getElementsByTagName('input')[i].value));
       }
 
       let results_matrix = []
-      for(i = 0; i< tabela_somatorio_y.getElementsByTagName('input').length; i++){
+      for (i = 0; i < tabela_somatorio_y.getElementsByTagName('input').length; i++) {
         results_matrix.push(parseFloat(tabela_somatorio_y.getElementsByTagName('input')[i].value));
       }
       console.log("All coefs", all_coefs);
@@ -337,12 +344,12 @@
       for (let i = 0; i < n_linhas; i++) {
         let line_matrix = [];
         for (let j = 0; j < n_linhas; j++) {
-          line_matrix.push(all_coefs[j+i]);
+          line_matrix.push(all_coefs[j + i]);
         }
         coef_matrix.push(line_matrix);
       }
 
-      console.log("Matriz Coeficiente e Matriz Resultados: ",coef_matrix, results_matrix);
+      console.log("Matriz Coeficiente e Matriz Resultados: ", coef_matrix, results_matrix);
 
       let solutions = math.lusolve(coef_matrix, results_matrix);
 
