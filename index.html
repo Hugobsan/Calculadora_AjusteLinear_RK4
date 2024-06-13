@@ -25,11 +25,11 @@
         <div class="collapse navbar-collapse" id="collapsibleNavId">
           <ul class="navbar-nav me-auto mt-2 mt-lg-0">
             <li class="nav-item">
-              <a class="nav-link active" href="#" aria-current="page" id="ajuste_curvas">Ajuste de
+              <a class="nav-link active" href="index.html" aria-current="page" id="ajuste_curvas">Ajuste de
                 curvas</a>
             </li>
             <li class="nav-item">
-              <a class="nav-link" href="#" id="rk4">RK-4</a>
+              <a class="nav-link" href="rk4.html" id="rk4">RK-4</a>
             </li>
           </ul>
         </div>
@@ -235,6 +235,7 @@
       }
     }
 
+    
     // Modificando tabelas ao alterar o número de pontos
     document.getElementById('n_pontos').addEventListener('change', function () {
       let n = parseInt(this.value);
@@ -285,6 +286,8 @@
 
     //Ao clicar no botão calcular
     document.getElementById('calcular').addEventListener('click', function () {
+      
+      /* --- Recuperando informações do HTML ---*/
       let n = parseInt(document.getElementById('n_pontos').value);
       let grau = parseInt(document.getElementById('grau').value);
 
@@ -297,11 +300,14 @@
 
       let quant_iter_x = tabela_somatorio_x.getElementsByTagName('input').length
 
-      for (let i = 1; i <= quant_iter_x; i++) {
+      //Calculando o somatório X
+      for (let i = 1; i <= quant_iter_x; i++) { //Pra cada coluna da tabela de somatório X
         let sum = 0;
+
         for (let j = 0; j < inputs_x.length; j++) {
           sum += Math.pow(parseFloat(inputs_x[j].value), i);
         }
+
         tabela_somatorio_x.getElementsByTagName('input')[i - 1].value = sum;
       }
 
@@ -376,6 +382,7 @@
       document.getElementById('erro-total').innerText = erro_total;
       document.getElementById('show_results').classList.remove('d-none');
     });
+    
   </script>
 </body>
 

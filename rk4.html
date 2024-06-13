@@ -1,0 +1,249 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+
+<head>
+    <title>Calculadora - Ajuste de Curvas | RK4</title>
+    <!-- Required meta tags -->
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no" />
+
+    <!-- Bootstrap CSS v5.2.1 -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet"
+        integrity="sha384-T3c6CoIi6uLrA9TneNEoa7RxnatzjcDSCmG1MXxSR1GAsXEV/Dwwykc2MPK8M2HN" crossorigin="anonymous" />
+</head>
+
+<body>
+    <header>
+        <nav class="navbar navbar-expand-sm navbar-light bg-light">
+            <div class="container">
+                <a class="navbar-brand" href="#">Calculadora CN</a>
+                <button class="navbar-toggler d-lg-none" type="button" data-bs-toggle="collapse"
+                    data-bs-target="#collapsibleNavId" aria-controls="collapsibleNavId" aria-expanded="false"
+                    aria-label="Toggle navigation">
+                    <span class="navbar-toggler-icon"></span>
+                </button>
+                <div class="collapse navbar-collapse" id="collapsibleNavId">
+                    <ul class="navbar-nav me-auto mt-2 mt-lg-0">
+                        <li class="nav-item">
+                            <a class="nav-link active" href="index.html" aria-current="page" id="ajuste_curvas">Ajuste
+                                de
+                                curvas</a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" href="rk4.html" id="rk4">RK-4</a>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+        </nav>
+    </header>
+    <main>
+        <div class="container">
+            <div class="row">
+                <div class="col-md-12">
+                    <h1 class="text-center">Calculadora - Cálculo Numérico</h1>
+                </div>
+            </div>
+            <div class="my-2">
+                <div class="row">
+                    <h2>Método do RK4</h2>
+                </div>
+                <div class="row my-3">
+                    <div class="col-sm-12 col-md-4">
+                        <label for="x_inicial">X Inicial</label>
+                        <input type="number" class="form-control" id="x_inicial" name="x_inicial" value="0">
+                    </div>
+                    <div class="col-sm-12 col-md-4">
+                        <label for="y_inicial">Y Inicial</label>
+                        <input type="number" class="form-control" id="y_inicial" name="y_inicial" value="0">
+                    </div>
+                    <div class="col-sm-12 col-md-4">
+                        <label for="step">Passo</label>
+                        <input type="number" class="form-control" id="step" name="step">
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-12">
+                        <label for="function">y' = f(x, y)</label>
+                        <input type="text" class="form-control" id="function" name="function"
+                            placeholder="x * x + 2 * y">
+                    </div>
+                </div>
+                <div class="d-flex flex-row justify-content-around">
+                    <div>
+                        <button class="btn btn-success my-2 btn-lg" id="btn_calcular">Calcular</button>
+                    </div>
+                    <div>
+                        <button class="btn btn-primary my-2 btn-lg" id="btn_limpar">Limpar</button>
+                    </div>
+                </div>
+                
+            </div>
+            <div class="my-2">
+                <div class="table-responsive">
+                    <table class="table table-secondary" id="table_iterations">
+                        <thead>
+                            <tr>
+                                <th scope="col">Iteração</th>
+                                <th scope="col">X</th>
+                                <th scope="col">Y</th>
+                                <th scope="col">F(x,y)</th>
+                                <th scope="col">K1</th>
+                                <th scope="col">K2</th>
+                                <th scope="col">K3</th>
+                                <th scope="col">K4</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+        <div style="position: fiyed; top:50px; right: 20px;">
+            <button class="btn btn-primary" data-bs-toggle="collapse" href="#collapseCalculadora" role="button"
+                aria-expanded="false" aria-controls="collapseCalculadora"
+                style="position: fixed; top:50px; right: 20px;">Calculadora Científica</button>
+            <div class="collapse col-6" id="collapseCalculadora">
+                <iframe width="600" height="500" src="https://web2.0calc.com/widgets/horizontal/"></iframe>
+            </div>
+        </div>
+    </main>
+    <footer>
+        <!-- place footer here -->
+    </footer>
+    <!-- Bootstrap JavaScript Libraries -->
+    <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.11.8/dist/umd/popper.min.js"
+        integrity="sha384-I7E8VVD/ismYTF4hNIPjVp/Zjvgyol6VFvRkX/vR+Vc4jQkC+hVqc2pM8ODewa9r"
+        crossorigin="anonymous"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.min.js"
+        integrity="sha384-BBtl+eGJRgqQAUMxJ7pMwbEyER4l1g+O15P+16Ep7Q9Q+zqX6gSbd85u4mG4QzX+"
+        crossorigin="anonymous"></script>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/mathjs/10.2.0/math.min.js"></script>
+
+    <script>
+        /**
+         * Função para adicionar nova linha à tabela table_iterations
+        */
+        function addLineIterTable(x, y, f = '', k1 = '', k2 = '', k3 = '', k4 = '') {
+            // Identificando o índice
+            var index = document.getElementById("table_iterations").rows.length - 1;
+
+            // Criando a nova linha
+            var newRow = document.getElementById("table_iterations").insertRow();
+
+            // Adicionando as células na nova linha
+            var cell1 = newRow.insertCell(0);
+            var cell2 = newRow.insertCell(1);
+            var cell3 = newRow.insertCell(2);
+            var cell4 = newRow.insertCell(3);
+            var cell5 = newRow.insertCell(4);
+            var cell6 = newRow.insertCell(5);
+            var cell7 = newRow.insertCell(6);
+            var cell8 = newRow.insertCell(7);
+
+            // Preenchendo as células com os valores
+            cell1.innerHTML = index;
+            cell2.innerHTML = x;
+            cell3.innerHTML = y;
+            cell4.innerHTML = f;
+            cell5.innerHTML = k1;
+            cell6.innerHTML = k2;
+            cell7.innerHTML = k3;
+            cell8.innerHTML = k4;
+        }
+
+        /**
+         * Função para altera uma linha a partir do indice
+         * */
+        function updateLineIterTable(index, x, y, f = '', k1 = '', k2 = '', k3 = '', k4 = '') {
+            // Obtendo a linha
+            var row = document.getElementById("table_iterations").rows[index];
+
+            // Preenchendo as células com os valores
+            row.cells[1].innerHTML = x;
+            row.cells[2].innerHTML = y;
+            row.cells[3].innerHTML = f;
+            row.cells[4].innerHTML = k1;
+            row.cells[5].innerHTML = k2;
+            row.cells[6].innerHTML = k3;
+            row.cells[7].innerHTML = k4;
+        }
+        //Adicionando a primeira linha
+        addLineIterTable('', '', '', '', '', '', '');
+
+        document.getElementById('x_inicial').addEventListener('change', function () {
+            x = parseFloat(document.getElementById('x_inicial').value);
+
+            //Adicionando o x na primeira linha
+            document.getElementById('table_iterations').rows[1].cells[1].innerHTML = x;
+        });
+
+        document.getElementById('y_inicial').addEventListener('change', function () {
+            y = parseFloat(document.getElementById('y_inicial').value);
+
+            //Adicionando o y na primeira linha
+            document.getElementById('table_iterations').rows[1].cells[2].innerHTML = y;
+        });
+
+        document.getElementById('btn_limpar').addEventListener('click', function(){
+            document.getElementById('table_iterations').innerHTML = `
+                <thead>
+                    <tr>
+                        <th scope="col">Iteração</th>
+                        <th scope="col">X</th>
+                        <th scope="col">Y</th>
+                        <th scope="col">F(x,y)</th>
+                        <th scope="col">K1</th>
+                        <th scope="col">K2</th>
+                        <th scope="col">K3</th>
+                        <th scope="col">K4</th>
+                    </tr>
+                </thead>
+                <tbody>
+                </tbody>
+            `;
+
+            addLineIterTable('', '', '', '', '', '', '');
+        });
+
+        document.getElementById('btn_calcular').addEventListener('click', function () {
+            // var x = parseFloat(document.getElementById('x_inicial').value);
+            // var y = parseFloat(document.getElementById('y_inicial').value);
+            const step = parseFloat(document.getElementById('step').value);
+            const function_textual = document.getElementById('function').value;
+
+            // Compilar a função matemática
+            const f = math.compile(function_textual);
+
+            //Obtendo os valores de x e y a partir da última liha da tabela
+            var x = parseFloat(document.getElementById('table_iterations').rows[document.getElementById('table_iterations').rows.length - 1].cells[1].innerHTML);
+            var y = parseFloat(document.getElementById('table_iterations').rows[document.getElementById('table_iterations').rows.length - 1].cells[2].innerHTML);
+
+            //Obtendo indice
+            var index = document.getElementById("table_iterations").rows.length - 1;
+
+            let function_result = f.evaluate({ x: x, y: y });
+
+            let k1 = f.evaluate({ x: x, y: y });
+            let k2 = f.evaluate({ x: x + step / 2, y: y + (k1 * step) / 2 });
+            let k3 = f.evaluate({ x: x + step / 2, y: y + (k2 * step) / 2 });
+            let k4 = f.evaluate({ x: x + step, y: y + k3 * step });
+
+            let deltaY = (step / 6) * (k1 + 2 * k2 + 2 * k3 + k4);
+            let deltaX = step;
+
+            //Alterando a última linha
+            updateLineIterTable(index, x, y, function_result, k1, k2, k3, k4);
+
+            x += deltaX;
+            y += deltaY;
+
+            addLineIterTable(x, y, '', '', '', '', '');
+        });
+    </script>
+</body>
+
+</html>
