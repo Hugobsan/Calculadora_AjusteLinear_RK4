@@ -77,7 +77,7 @@
                         <button class="btn btn-primary my-2 btn-lg" id="btn_limpar">Limpar</button>
                     </div>
                 </div>
-                
+
             </div>
             <div class="my-2">
                 <div class="table-responsive">
@@ -188,7 +188,7 @@
             document.getElementById('table_iterations').rows[1].cells[2].innerHTML = y;
         });
 
-        document.getElementById('btn_limpar').addEventListener('click', function(){
+        document.getElementById('btn_limpar').addEventListener('click', function () {
             document.getElementById('table_iterations').innerHTML = `
                 <thead>
                     <tr>
@@ -225,22 +225,24 @@
             //Obtendo indice
             var index = document.getElementById("table_iterations").rows.length - 1;
 
+            //Calculando o valor da função dados x,y da última linha
             let function_result = f.evaluate({ x: x, y: y });
 
-            let k1 = f.evaluate({ x: x, y: y });
-            let k2 = f.evaluate({ x: x + step / 2, y: y + (k1 * step) / 2 });
-            let k3 = f.evaluate({ x: x + step / 2, y: y + (k2 * step) / 2 });
-            let k4 = f.evaluate({ x: x + step, y: y + k3 * step });
+            let k1 = f.evaluate({ x: x, y: y }); // Calculando K1
+            let k2 = f.evaluate({ x: x + step / 2, y: y + (k1 * step) / 2 }); // Calculando K2
+            let k3 = f.evaluate({ x: x + step / 2, y: y + (k2 * step) / 2 }); // Calculando K3
+            let k4 = f.evaluate({ x: x + step, y: y + k3 * step }); // Calculando K4
 
             let deltaY = (step / 6) * (k1 + 2 * k2 + 2 * k3 + k4);
             let deltaX = step;
 
-            //Alterando a última linha
+            //Alterando a última linha com os valores calculados
             updateLineIterTable(index, x, y, function_result, k1, k2, k3, k4);
 
-            x += deltaX;
-            y += deltaY;
+            x += deltaX; // Calculando o próximo x
+            y += deltaY; // Calculando o próximo y
 
+            //Adicionando a próxima linha com os valores calculados
             addLineIterTable(x, y, '', '', '', '', '');
         });
     </script>
