@@ -103,12 +103,13 @@
         </div>
         <div style="position: fixed; top:50px; right: 20px;">
             <button class="btn btn-primary" data-bs-toggle="collapse" href="#collapseCalculadora" role="button"
-              aria-expanded="false" aria-controls="collapseCalculadora"
-              style="position: fixed; top:50px; right: 20px;">Calculadora Científica</button>
+                aria-expanded="false" aria-controls="collapseCalculadora"
+                style="position: fixed; top:50px; right: 20px;">Calculadora Científica</button>
             <div class="collapse col-6" id="collapseCalculadora">
-              <iframe width="600" height="500" src="https://web2.0calc.com/widgets/horizontal/" style="position: fixed; top:80px; right: 20px;"></iframe>
+                <iframe width="600" height="500" src="https://web2.0calc.com/widgets/horizontal/"
+                    style="position: fixed; top:80px; right: 20px;"></iframe>
             </div>
-          </div>
+        </div>
     </main>
     <footer>
         <!-- place footer here -->
@@ -171,6 +172,18 @@
             row.cells[6].innerHTML = k3;
             row.cells[7].innerHTML = k4;
         }
+
+        /**
+         * Função para remover uma linha a partir do índice
+         * */
+        function removeLineIterTable(index) {
+            // Obtendo a referência para a tabela
+            var table = document.getElementById("table_iterations");
+
+            // Removendo a linha
+            table.deleteRow(index + 1);
+        }
+
         //Adicionando a primeira linha
         addLineIterTable('', '', '', '', '', '', '');
 
@@ -189,22 +202,13 @@
         });
 
         document.getElementById('btn_limpar').addEventListener('click', function () {
-            document.getElementById('table_iterations').innerHTML = `
-                <thead>
-                    <tr>
-                        <th scope="col">Iteração</th>
-                        <th scope="col">X</th>
-                        <th scope="col">Y</th>
-                        <th scope="col">F(x,y)</th>
-                        <th scope="col">K1</th>
-                        <th scope="col">K2</th>
-                        <th scope="col">K3</th>
-                        <th scope="col">K4</th>
-                    </tr>
-                </thead>
-                <tbody>
-                </tbody>
-            `;
+            var table = document.getElementById("table_iterations");
+            var rowCount = table.rows.length;
+
+            // Itera reversamente para evitar problemas ao remover elementos durante a iteração
+            for (var i = rowCount - 1; i > 1; i--) {
+                removeLineIterTable(i);
+            }
 
             addLineIterTable('', '', '', '', '', '', '');
         });
