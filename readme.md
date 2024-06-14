@@ -1,6 +1,6 @@
-# Calculadora de Ajuste de Curvas
+# Calculadora de Ajuste de Curvas e RK4
 
-Este repositório contém uma aplicação de calculadora de ajuste de curvas. Através dessa aplicação, é possível realizar o ajuste de curvas utilizando o método de mínimos quadrados.
+Este repositório contém uma aplicação de calculadora de ajuste de curvas e método de Runge-Kutta de ordem 4. Através dessa aplicação, é possível realizar o ajuste de curvas utilizando o método de mínimos quadrados e aplicação do método RK4.
 
 ## O que é ajuste de curvas?
 
@@ -8,9 +8,12 @@ O ajuste de curvas é uma técnica utilizada para encontrar uma função matemá
 
 O método de mínimos quadrados é utilizado para encontrar os valores de m e b que minimizam a soma dos quadrados das diferenças entre os valores observados e os valores previstos pela função ajustada.
 
-## Como usar a calculadora de ajuste de curvas
+## O que é o RK4?
+Este método consiste na estimativa do valor da função (x,y) em vários pontos intermediários. O ponto final (escolhido) será a média ponderada entre esses pontos intermediários. Este método é baseado na série de Taylor e sua ordem será definida pela ordem desta série.
 
-1. Basta acessar o link da aplicação: [Calculadora de Ajuste de Curvas](https://hugobsan.me/Calculadora_AjusteLinear_RK4/)
+## Como usar a calculadora
+
+1. Basta acessar o link da aplicação: [Calculadora](https://hugobsan.me/Calculadora_AjusteLinear_RK4/)
 
 ## Contribuição
 
